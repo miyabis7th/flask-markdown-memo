@@ -57,3 +57,5 @@ if __name__ == '__main__':
     # Cloud Run用にPORTを8080に設定（環境変数で上書き可能）
     port = int(os.environ.get('PORT', 8080))
     app.run(debug=False, host='0.0.0.0', port=port)
+
+# Trigger GitHub Actions workflow
