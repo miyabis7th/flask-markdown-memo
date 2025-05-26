@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>メモ詳細</title>
+    <title>タグ一覧</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -52,58 +52,55 @@
         .btn:hover { 
             transform: translateY(-2px); 
         }
-        .btn-danger { 
-            background: linear-gradient(45deg, #ff6b6b, #ee5a24); 
+        .tag-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
         }
-        .tag-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 20px;
+        .tag-card {
+            background: #f8fafc;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
-        .tag-item {
-            background: #f0f2f5;
-            color: #4a5568;
-            text-decoration: none;
-            padding: 5px 12px;
-            border-radius: 15px;
+        .tag-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .tag-name {
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+        .tag-count {
+            color: #6b7280;
             font-size: 14px;
         }
     </style>
 </head>
 <body>
     <header>
-        <h1>メモ詳細</h1>
+        <h1>タグ一覧</h1>
     </header>
     
     <div class="container">
         <div class="card">
-            <div class="memo-content">
-                {{ rendered_content|safe }}
-            </div>
-            {% if memo.tags %}
-            <div class="tag-list">
-                <strong>タグ：</strong>
-                {% for tag in memo.tags %}
-                <a href="{{ url_for('index', tag=tag.name) }}" class="tag-item">{{ tag.name }}</a>
+            <div class="tag-grid">
+                {% for tag in tags %}
+                <a href="{{ url_for('index', tag=tag.name) }}" style="text-decoration: none;">
+                    <div class="tag-card">
+                        <div class="tag-name">{{ tag.name }}</div>
+                        <div class="tag-count">メモ {{ tag_counts[tag.name] }} 件</div>
+                    </div>
+                </a>
                 {% endfor %}
             </div>
-            {% endif %}
         </div>
         
-        <div class="actions mt-2">
-            <a href="{{ url_for('edit_memo', memo_id=memo.id) }}" class="btn btn-primary">
-                <i class="material-icons" style="font-size: 18px; vertical-align: text-bottom;">edit</i> 編集
-            </a>
-            <form method="post" action="{{ url_for('delete_memo', memo_id=memo.id) }}" style="display: inline;">
-                <button type="submit" class="btn btn-danger" onclick="return confirm('本当に削除しますか？')">
-                    <i class="material-icons" style="font-size: 18px; vertical-align: text-bottom;">delete</i> 削除
-                </button>
-            </form>
-            <a href="{{ url_for('index') }}" class="btn">
-                <i class="material-icons" style="font-size: 18px; vertical-align: text-bottom;">arrow_back</i> 一覧へ戻る
-            </a>
-        </div>
+        <a href="{{ url_for('index') }}" class="btn">
+            <i class="material-icons" style="font-size: 18px; vertical-align: text-bottom;">arrow_back</i> ホームに戻る
+        </a>
     </div>
 </body>
 </html>

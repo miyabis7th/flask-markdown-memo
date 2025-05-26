@@ -74,6 +74,42 @@
         .btn:hover { 
             transform: translateY(-2px); 
         }
+        .tag-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .tag-item {
+            background: #f0f2f5;
+            color: #4a5568;
+            text-decoration: none;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+        .tag-item:hover {
+            background: #e2e8f0;
+            transform: translateY(-2px);
+        }
+        .tag-item.active {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+        }
+        .memo-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: 10px;
+        }
+        .memo-tag {
+            background: #e2e8f0;
+            color: #4a5568;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 12px;
+        }
     </style>
 </head>
 <body>
@@ -85,19 +121,44 @@
         <div class="card">
             <form method="post">
                 <textarea name="memo" placeholder="Markdownでメモを入力" rows="4"></textarea>
+                <div style="margin: 10px 0;">
+                    <input type="text" name="tags" placeholder="タグをカンマで区切って入力" style="width: 100%; border: 2px solid #e1e5e9; border-radius: 10px; padding: 10px;">
+                </div>
                 <button type="submit" class="btn btn-primary">
                     <i class="material-icons" style="font-size: 18px; vertical-align: text-bottom;">add</i> 新規メモ作成
                 </button>
             </form>
         </div>
 
+        <div class="card">
+            <h3>タグで絞り込み</h3>
+            <div class="tag-list">
+                <a href="{{ url_for('index') }}" class="tag-item {% if not current_tag %}active{% endif %}">すべて表示</a>
+                {% for tag in all_tags %}
+                <a href="{{ url_for('index', tag=tag.name) }}" class="tag-item {% if current_tag == tag.name %}active{% endif %}">
+                    {{ tag.name }}
+                </a>
+                {% endfor %}
+            </div>
+            <div style="margin-top: 10px; text-align: right;">
+                <a href="{{ url_for('view_tags') }}">すべてのタグを見る</a>
+            </div>
+        </div>
+        
         <h2>メモ一覧</h2>
         <div class="memo-list">
-            {% for memo_id, content in memos %}
+            {% for memo_id, content, tags in memos %}
                 <div class="memo">
                     <div class="memo-content">
                         {{ content|safe }}
                     </div>
+                    {% if tags %}
+                    <div class="memo-tags">
+                        {% for tag in tags %}
+                        <span class="memo-tag">{{ tag.name }}</span>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
                     <div class="memo-actions">
                         <a href="{{ url_for('memo_detail', memo_id=memo_id) }}">詳細</a>
                         <a href="{{ url_for('edit_memo', memo_id=memo_id) }}">編集</a>

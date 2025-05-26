@@ -72,6 +72,12 @@
         <div class="card">
             <form method="post">
                 <textarea name="memo" rows="10">{{ memo.content }}</textarea>
+                
+                <div class="form-group" style="margin: 10px 0;">
+                    <label for="tags">タグ（カンマ区切り）</label>
+                    <input type="text" name="tags" id="tags" style="width: 100%; border: 2px solid #e1e5e9; border-radius: 10px; padding: 10px;" value="{{ current_tags }}" placeholder="タグ1, タグ2, ...">
+                </div>
+                
                 <div>
                     <button type="submit" class="btn btn-primary">
                         <i class="material-icons" style="font-size: 18px; vertical-align: text-bottom;">save</i> 保存
