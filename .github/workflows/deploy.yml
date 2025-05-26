@@ -46,7 +46,8 @@ jobs:
           --platform managed \
           --region $REGION \
           --allow-unauthenticated \
-          --set-env-vars DATABASE_URL="${{ secrets.DATABASE_URL }}" \
+          --add-cloudsql-instances flask-memo:asia-northeast1:flask-memo-db \
+          --set-env-vars DATABASE_URL="postgresql+psycopg2://memo_app_user:${{ secrets.DB_PASSWORD }}@/memo_app_db?host=/cloudsql/flask-memo:asia-northeast1:flask-memo-db" \
           --memory 512Mi \
           --cpu 1 \
           --max-instances 10

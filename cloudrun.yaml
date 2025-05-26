@@ -10,6 +10,9 @@ spec:
     metadata:
       annotations:
         run.googleapis.com/execution-environment: gen2
+        run.googleapis.com/client-name: gcloud
+        run.googleapis.com/client-version: 523.0.1
+        run.googleapis.com/cloudsql-instances: flask-memo:asia-northeast1:flask-memo-db
     spec:
       containers:
       - image: gcr.io/PROJECT_ID/flask-markdown-memo
