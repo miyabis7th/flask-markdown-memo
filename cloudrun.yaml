@@ -1,0 +1,24 @@
+# Cloud Run deployment configuration
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: flask-markdown-memo
+  annotations:
+    run.googleapis.com/ingress: all
+spec:
+  template:
+    metadata:
+      annotations:
+        run.googleapis.com/execution-environment: gen2
+    spec:
+      containers:
+      - image: gcr.io/PROJECT_ID/flask-markdown-memo
+        ports:
+        - containerPort: 8080
+        env:
+        - name: DATABASE_URL
+          value: "postgresql://username:password@host:5432/database"
+        resources:
+          limits:
+            cpu: "1"
+            memory: "512Mi"
