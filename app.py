@@ -1,19 +1,32 @@
 from flask import Flask, render_template, request, redirect, url_for
 import markdown
 import os
+from flask_sqlalchemy import SQLAlchemy
+from models import db, Memo
 
 app = Flask(__name__)
 
-memos = []
+# Render用のPostgreSQL接続設定
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///local.db')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+db.init_app(app)
+
+@app.before_first_request
+def create_tables():
+    db.create_all()
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
         memo = request.form.get('memo')
         if memo:
-            memos.append(memo)
+            new_memo = Memo(content=memo)
+            db.session.add(new_memo)
+            db.session.commit()
         return redirect(url_for('index'))
-    rendered_memos = [markdown.markdown(m) for m in memos]
+    memos = Memo.query.order_by(Memo.id.desc()).all()
+    rendered_memos = [markdown.markdown(m.content) for m in memos]
     return render_template('index.html', memos=rendered_memos)
 
 if __name__ == '__main__':
